@@ -1,0 +1,1 @@
+Files are auto-generated in ./io/api/target/scala-\*.*/src_managed from ./io/api/src/main/bootstrap

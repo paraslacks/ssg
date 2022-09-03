@@ -1,0 +1,35 @@
+SourceLoader:
+  Name: Source
+  Type: scala.io.Source
+  TypeName: Source
+  ResourceDescription: a Scala way of reading from any number of things
+BufferedSourceLoader:
+  Name: BufferedSource
+  Type: scala.io.BufferedSource
+  TypeName: BufferedSource
+  ResourceDescription: a Scala way of reading from any number of things more than once
+FileLoader:
+  Name: File
+  Type: java.io.File
+  TypeName: File
+  ResourceDescription: the file, if it exists
+InputStreamLoader:
+  Name: InputStream
+  Type: java.io.InputStream
+  TypeName: InputStream
+  ResourceDescription: an open InputStream if possible
+OutputStreamLoader:
+  Name: OutputStream
+  Type: java.io.OutputStream
+  TypeName: OutputStream
+  ResourceDescription: an open OutputStream if possible
+UriStreamLoader:
+  Name: Uri
+  Type: java.net.URI
+  TypeName: URI
+  ResourceDescription: the uri, if it exists
+UrlStreamLoader:
+  Name: Url
+  Type: java.net.URL
+  TypeName: URL
+  ResourceDescription: the url, if it exists
