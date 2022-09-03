@@ -1,0 +1,258 @@
+interface(ClassName, Model) ::= <<
+package jellon.ssg.io.api.loader
+
+import <Model.Type>
+
+trait <ClassName> {
+  /** open a <Model.TypeName> if possible */
+  def opt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>]
+}
+
+object <ClassName> {
+
+  implicit class I<ClassName>Ext(self: <ClassName>) {
+    /** open a <Model.TypeName> if possible */
+    @`inline`
+    def opt<Model.Name>(id: String): Option[<Model.TypeName>] = self
+      .opt<Model.Name>(id, defaultHint)
+
+    /** @return <Model.TypeName> or throw an UnsupportedOperationException */
+    @`inline`
+    @`throws`[UnsupportedOperationException]("if unavailable")
+    def to<Model.Name>(id: String): <Model.TypeName> = self
+      .opt<Model.Name>(id)
+      .getOrElse {
+        throw new UnsupportedOperationException(s"$self has no defined <Model.TypeName>")
+      }
+
+    /** @return <Model.TypeName> or throw an UnsupportedOperationException */
+    @`inline`
+    @`throws`[UnsupportedOperationException]("if unavailable")
+    def to<Model.Name>(id: String, hint: String): <Model.TypeName> = self
+      .opt<Model.Name>(id, hint)
+      .getOrElse {
+        throw new UnsupportedOperationException(s"$self has no defined <Model.TypeName>")
+      }
+  }
+
+}
+
+>>
+
+IResourceLoader(ClassName, ModelNames, Models) ::=<<
+package jellon.ssg.io.api.loader
+
+import jellon.ssg.io.api.resource.IResource
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+trait <ClassName>
+  extends <ModelNames:{Name|I<Name>}; separator={<\n>  with }> {
+  /** get a resource */
+  def apply(id: String, hint: String): IResource
+}
+
+>>
+
+IResource(ClassName, ModelNames, Models) ::=<<
+package jellon.ssg.io.api.resource
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+/**
+ * Represents something we can read, write, or both.
+ */
+trait <ClassName> {
+  /** @return information about where this resource came from */
+  def id: String
+
+  /** @return optional metadata such as a MIME type which should default to the empty string when unavailable */
+  def hint: String
+<Models:{Model|
+  /** @return <Model.ResourceDescription> */
+  def opt<Model.Name>: Option[<Model.TypeName>]}; separator={<\n>}>
+}
+
+object <ClassName> {
+
+  implicit class <ClassName>Ext(self: <ClassName>) {<\\>
+<Models:{Model|
+    /** @return <Model.TypeName> or throw an UnsupportedOperationException */
+    @`inline`
+    @`throws`[UnsupportedOperationException]("if unavailable")
+    def to<Model.Name>: <Model.TypeName> = self
+      .opt<Model.Name>
+      .getOrElse {
+        throw new UnsupportedOperationException(s"$self has no defined <Model.TypeName>")
+      \}}; separator={<\n>}>
+  }
+
+}
+
+>>
+
+AggregateResourceLoader(ClassName, ModelNames, Models) ::= <<
+package jellon.ssg.io.spi.resources
+
+import jellon.ssg.io.api.loader.IResourceLoader
+import jellon.ssg.io.api.resource.IResource
+import jellon.ssg.io.spi.loader.BaseResourceLoaderAdapter
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+/** find the first [[IResourceLoader]] that returns a non-empty Option
+ *
+ * @param loaders delegated to
+ */
+class <ClassName>(loaders: IResourceLoader*) extends BaseResourceLoaderAdapter {
+  private val lazyLoaders: LazyList[IResourceLoader] = this
+    .loaders
+    .to(LazyList)
+
+<Models:{Model|
+  /** @inheritdoc */
+  override protected def tryOpt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>] = this
+    .find(_.opt<Model.Name>(id, hint))}; separator={<\n>}>
+
+  @`inline`
+  private[this] def find[A](mapper: IResourceLoader => Option[A]): Option[A] = this
+    .lazyLoaders
+      .map(
+        loader => mapper(loader)
+      )
+      .find(
+        _.isDefined
+      )
+      .flatten
+}
+
+>>
+
+BaseResourceLoaderAdapter(ClassName, ModelNames, Models) ::=<<
+package jellon.ssg.io.spi.loader
+
+import grizzled.slf4j.Logging
+import jellon.ssg.io.api.loader.IResourceLoader
+import jellon.ssg.io.api.resource.IResource
+import jellon.ssg.io.spi.loader.BaseResourceLoaderAdapter.printHint
+import jellon.ssg.io.spi.resource.ResourceLoaderResource
+
+import java.io.IOException
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+abstract class <ClassName> extends IResourceLoader with Logging {
+
+  import <ClassName>.printHint
+
+  override def apply(id: String, hint: String): IResource =
+    new ResourceLoaderResource(id, hint, this)
+<Models:{Model|
+  /** @return <Model.ResourceDescription> */
+  protected def tryOpt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>] =
+    Option.empty
+
+  override final def opt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>] =
+    try {
+      tryOpt<Model.Name>(id, hint)
+    \} catch {
+      case ex: IOException =>
+        logger.warn(s"$this failed to get <Model.TypeName> for: $id${printHint(hint)\}", ex)
+        Option.empty
+    \}}; separator={<\n>}>
+}
+
+object <ClassName> {
+  private def printHint(hint: String): String =
+    if (hint.nonEmpty) s" ($hint)"
+    else ""
+}
+
+>>
+
+FilterResourceLoader(ClassName, ModelNames, Models) ::= <<
+package jellon.ssg.io.spi.loader
+
+import jellon.ssg.io.api.loader.IResourceLoader
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+class <ClassName>(protected var delegate: IResourceLoader) extends BaseResourceLoaderAdapter {
+<Models:{Model|
+  /** @inheritdoc */
+  override protected def tryOpt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>] = this
+    .find(_.opt<Model.Name>(id, hint))}; separator={<\n>}>
+
+  @`inline`
+  private def find[A](mapper: IResourceLoader => Option[A]): Option[A] =
+    mapper(delegate)
+}
+
+>>
+
+PrefixedResourceLoader(ClassName, ModelNames, Models) ::= <<
+package jellon.ssg.io.spi.loader
+
+import jellon.ssg.io.api.loader.IResourceLoader
+import jellon.ssg.io.api.resource.IResource
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+class <ClassName>(delegate: IResourceLoader, val prefix: String) extends FilterResourceLoader(delegate) {
+  override def apply(id: String, hint: String): IResource = super
+    .apply(s"$prefix$id", hint)
+
+<Models:{Model|
+  /** @inheritdoc */
+  override protected def tryOpt<Model.Name>(id: String, hint: String): Option[<Model.TypeName>] = super
+    .tryOpt<Model.Name>(s"$prefix$id", hint)}; separator={<\n>}>
+}
+
+object <ClassName> {
+  implicit class PrefixedResourceLoaderExt(self: IResourceLoader) {
+    @`inline`
+    def prefixed(prefix: String): PrefixedResourceLoader =
+      new PrefixedResourceLoader(self, prefix)
+  }
+}
+
+>>
+
+ResourceAdapter(ClassName, ModelNames, Models) ::= <<
+package jellon.ssg.io.impl.resource
+
+import jellon.ssg.io.api.resource.IResource
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+/**
+ * Adapter pattern. Implements all [[jellon.ssg.io.api.resource.IResource]] methods with [[scala.Option#empty()]]
+ *
+ * @param id   information about where this resource came from
+ * @param hint optional metadata such as a MIME type which should default to the empty string when unavailable
+ */
+abstract class <ClassName>(override val id: String, override val hint: String) extends IResource {
+<Models:{Model|
+  /** @inheritdoc */
+  override def opt<Model.Name>: Option[<Model.TypeName>] = Option.empty}; separator={<\n>}>
+}
+
+>>
+
+ResourceLoaderResource(ClassName, ModelNames, Models) ::= <<
+package jellon.ssg.io.spi.resource
+
+import jellon.ssg.io.api.loader.IResourceLoader
+import jellon.ssg.io.api.resource.IResource
+
+<Models:{Model|import <Model.Type>}; separator={<\n>}>
+
+class <ClassName>(override val id: String, override val hint: String, val loader: IResourceLoader) extends IResource {
+<Models:{Model|
+  /** @inheritdoc */
+  override def opt<Model.Name>: Option[<Model.TypeName>] = this
+    .loader
+    .opt<Model.Name>(id, hint)}; separator={<\n>}>
+}
+
+>>
