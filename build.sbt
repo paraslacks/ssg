@@ -12,13 +12,13 @@ lazy val root = (project in file("."))
     name := "ssg"
   )
 
-lazy val lookup = (project in file("./util/lookup"))
+lazy val lookup = (project in file("core/util/lookup"))
   .settings(
     name := "lookup",
     libraryDependencies ++= Dependencies.testLibs
   )
 
-lazy val ioApi = (project in file("io/api"))
+lazy val ioApi = (project in file("core/io/api"))
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "io.api",
@@ -78,7 +78,7 @@ lazy val ioApi = (project in file("io/api"))
       ++ Dependencies.testLibs,
   )
 
-lazy val ioSpi = (project in file("io/impl"))
+lazy val ioSpi = (project in file("core/io/impl"))
   .dependsOn(ioApi)
   .enablePlugins(JavaAppPackaging)
   .settings(
@@ -86,7 +86,7 @@ lazy val ioSpi = (project in file("io/impl"))
     libraryDependencies ++= Dependencies.slf4j,
   )
 
-lazy val ioUnitTest = (project in file("io/unit-test"))
+lazy val ioUnitTest = (project in file("core/io/unit-test"))
   .dependsOn(ioApi, ioSpi)
   .enablePlugins(JavaAppPackaging)
   .settings(
