@@ -1,0 +1,7 @@
+groupId,artifactId,version
+org.slf4j,slf4j-api,1.7.25
+org.slf4j,slf4j-log4j12,1.7.25
+org.yaml,snakeyaml,1.26
+org.springframework,spring-beans,4.3.25.RELEASE
+org.springframework,spring-web,4.3.25.RELEASE
+org.springframework,spring-webmvc,4.3.25.RELEASE

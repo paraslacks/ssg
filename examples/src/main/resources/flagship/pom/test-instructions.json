@@ -1,0 +1,11 @@
+{
+  "load": {
+    "input": "<input>"
+  },
+  "st4": {
+    "stgroup": "mvn.stg",
+    "template": "deps",
+    "using": "input",
+    "output": "<result>"
+  }
+}

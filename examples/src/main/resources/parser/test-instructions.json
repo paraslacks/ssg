@@ -1,0 +1,11 @@
+{
+  "load": {
+    "input": "<input>"
+  },
+  "st4": {
+    "stgroup": "test-parser.stg",
+    "template": "<template>",
+    "using": "input",
+    "output": "<result>"
+  }
+}
