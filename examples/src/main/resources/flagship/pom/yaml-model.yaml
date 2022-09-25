@@ -1,4 +1,4 @@
-groupId: jellon.example
+groupId: paraslacks.example
 artifactId: example2
 version: 0.0.1-SNAPSHOT
 dependencies:

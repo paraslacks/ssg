@@ -1,6 +1,6 @@
 ThisBuild / scalaVersion := "2.13.8"
 
-ThisBuild / organization := "jellon"
+ThisBuild / organization := "paraslacks"
 
 ThisBuild / version := "0.0.1-SNAPSHOT"
 
@@ -23,7 +23,7 @@ lazy val ioApi = (project in file("io/api"))
   .settings(
     name := "io.api",
     Compile / sourceGenerators += Def.task {
-      val io: File = (Compile / Keys.sourceManaged).value / "jellon/ssg/io"
+      val io: File = (Compile / Keys.sourceManaged).value / "paraslacks/ssg/io"
       val apiLoader: File = new File(io, "api/loader")
       val apiResource: File = new File(io, "api/resource")
       val implLoader: File = new File(io, "spi/loader")
@@ -49,7 +49,7 @@ lazy val ioApi = (project in file("io/api"))
       files
     }.taskValue,
     Compile / sourceGenerators += Def.task {
-      val io: File = (Test / Keys.sourceManaged).value / "jellon/ssg/io"
+      val io: File = (Test / Keys.sourceManaged).value / "paraslacks/ssg/io"
       val apiLoader: File = new File(io, "api/loader")
       val apiResource: File = new File(io, "api/resource")
       val implLoader: File = new File(io, "spi/loader")

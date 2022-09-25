@@ -1,5 +1,5 @@
 interface(ClassName, Model) ::= <<
-package jellon.ssg.io.api.loader
+package paraslacks.ssg.io.api.loader
 
 import org.scalatest.flatspec.AnyFlatSpec
 
@@ -60,9 +60,9 @@ object I<ClassName>Tests {
 >>
 
 IResourceLoader(ClassName, ModelNames, Models) ::=<<
-package jellon.ssg.io.api.loader
+package paraslacks.ssg.io.api.loader
 
-import jellon.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.api.resource.IResource
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
@@ -75,7 +75,7 @@ trait <ClassName>
 >>
 
 IResource(ClassName, ModelNames, Models) ::=<<
-package jellon.ssg.io.api.resource
+package paraslacks.ssg.io.api.resource
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
@@ -112,11 +112,11 @@ object <ClassName> {
 >>
 
 AggregateResourceLoader(ClassName, ModelNames, Models) ::= <<
-package jellon.ssg.io.spi.resources
+package paraslacks.ssg.io.spi.resources
 
-import jellon.ssg.io.api.loader.IResourceLoader
-import jellon.ssg.io.api.resource.IResource
-import jellon.ssg.io.spi.loader.BaseResourceLoaderAdapter
+import paraslacks.ssg.io.api.loader.IResourceLoader
+import paraslacks.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.spi.loader.BaseResourceLoaderAdapter
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
@@ -149,13 +149,13 @@ class <ClassName>(loaders: IResourceLoader*) extends BaseResourceLoaderAdapter {
 >>
 
 BaseResourceLoaderAdapter(ClassName, ModelNames, Models) ::=<<
-package jellon.ssg.io.spi.loader
+package paraslacks.ssg.io.spi.loader
 
 import grizzled.slf4j.Logging
-import jellon.ssg.io.api.loader.IResourceLoader
-import jellon.ssg.io.api.resource.IResource
-import jellon.ssg.io.spi.loader.BaseResourceLoaderAdapter.printHint
-import jellon.ssg.io.spi.resource.ResourceLoaderResource
+import paraslacks.ssg.io.api.loader.IResourceLoader
+import paraslacks.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.spi.loader.BaseResourceLoaderAdapter.printHint
+import paraslacks.ssg.io.spi.resource.ResourceLoaderResource
 
 import java.io.IOException
 
@@ -191,9 +191,9 @@ object <ClassName> {
 >>
 
 FilterResourceLoader(ClassName, ModelNames, Models) ::= <<
-package jellon.ssg.io.spi.loader
+package paraslacks.ssg.io.spi.loader
 
-import jellon.ssg.io.api.loader.IResourceLoader
+import paraslacks.ssg.io.api.loader.IResourceLoader
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
@@ -211,10 +211,10 @@ class <ClassName>(protected var delegate: IResourceLoader) extends BaseResourceL
 >>
 
 PrefixedResourceLoader(ClassName, ModelNames, Models) ::= <<
-package jellon.ssg.io.spi.loader
+package paraslacks.ssg.io.spi.loader
 
-import jellon.ssg.io.api.loader.IResourceLoader
-import jellon.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.api.loader.IResourceLoader
+import paraslacks.ssg.io.api.resource.IResource
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
@@ -239,14 +239,14 @@ object <ClassName> {
 >>
 
 ResourceAdapter(ClassName, ModelNames, Models) ::= <<
-package jellon.ssg.io.impl.resource
+package paraslacks.ssg.io.impl.resource
 
-import jellon.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.api.resource.IResource
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 
 /**
- * Adapter pattern. Implements all [[jellon.ssg.io.api.resource.IResource]] methods with [[scala.Option#empty()]]
+ * Adapter pattern. Implements all [[paraslacks.ssg.io.api.resource.IResource]] methods with [[scala.Option#empty()]]
  *
  * @param id   information about where this resource came from
  * @param hint optional metadata such as a MIME type which should default to the empty string when unavailable
@@ -260,10 +260,10 @@ abstract class <ClassName>(override val id: String, override val hint: String) e
 >>
 
 ResourceLoaderResource(ClassName, ModelNames, Models) ::= <<
-package jellon.ssg.io.spi.resource
+package paraslacks.ssg.io.spi.resource
 
-import jellon.ssg.io.api.loader.IResourceLoader
-import jellon.ssg.io.api.resource.IResource
+import paraslacks.ssg.io.api.loader.IResourceLoader
+import paraslacks.ssg.io.api.resource.IResource
 
 <Models:{Model|import <Model.Type>}; separator={<\n>}>
 

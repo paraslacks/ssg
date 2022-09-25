@@ -1,5 +1,5 @@
 <root>
-    <groupId>jellon.example</groupId>
+    <groupId>paraslacks.example</groupId>
     <artifactId>example2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <dependencies>
