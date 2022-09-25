@@ -7,7 +7,7 @@ ThisBuild / version := "0.0.1-SNAPSHOT"
 enablePlugins(Antlr4Plugin)
 
 lazy val root = (project in file("."))
-  .aggregate(ioApi, ioSpi)
+  .aggregate(lookup, ioApi, ioSpi, ioUnitTest)
   .settings(
     name := "ssg"
   )
